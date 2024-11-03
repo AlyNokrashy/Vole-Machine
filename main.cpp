@@ -45,6 +45,10 @@ int main() {
                 cout << "Filename: ";
                 cin >> filename;
                 ifstream fs(filename);
+                if (!fs.is_open()) {
+                    cerr << "Error: Could not open file " << filename << endl;
+                    continue;
+                }
                 while (true) {
                     string hex_index;
                     cout << "Load the program starting at (hex index): ";
