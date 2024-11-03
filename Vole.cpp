@@ -198,27 +198,186 @@ bool Machine::valid_value(string &ins) {
 //load from memory to register
 void Machine::__1(string &ins) {
     int reg_index = base_to_decimal(ins[1]), memory_index = base_to_decimal(ins.substr(2,2), 16);
-    Register[reg_index] = Memory[memory_index];
+    Reg[reg_index] = Memory[memory_index];
 }
 
 //assign a value to register
 void Machine::__2(string &ins) {
     int reg_index = base_to_decimal(ins[1]), value = base_to_decimal(ins.substr(2,2), 16);
-    Register[reg_index] = value;
+    Reg[reg_index] = value;
 }
 
 //store pattern in register to the memory
 void Machine::__3(string &ins) {
     int reg_index = base_to_decimal(ins[1]), memory_index = base_to_decimal(ins.substr(2,2), 16);
-    Memory[memory_index] = Register[reg_index];
+    Memory[memory_index] = Reg[reg_index];
     if (memory_index == 0) screen.push_back(Memory[memory_index].get_value());
 }
 
 //copy from register to another register
 void  Machine::__4(string &ins) {
-
+    int reg_index1 = base_to_decimal(ins[2]), reg_index2 = base_to_decimal(ins[3]);
+    Reg[reg_index2] = Memory[reg_index1];
 }
 
+//adding 2's compliment
+void Machine::__5(string &ins) {
+    int r[3];
+    for (int i = 0; i < 3; i++) {
+        r[i] = base_to_decimal(ins[i + 1]);
+    }
+    Reg[r[0]] = AU.add_int(Reg[r[1]].get_value(), Reg[r[2]].get_value());
+}
 
+//adding float
+void Machine::__6(string &ins) {
+    int r[3], exp = 4;
+    for (int i = 0; i < 3; i++) {
+        r[i] = base_to_decimal(ins[i + 1]);
+    }
+    Reg[r[0]] = AU.add_float(Reg[r[1]].float_value(), Reg[r[2]].float_value());
+}
+
+//jump if Reg == Reg 0
+void Machine::__B(string &ins) {
+    int reg_index = base_to_decimal(ins[1]), memory_index = base_to_decimal(ins.substr(2,2), 16);
+    if (Reg[reg_index] == Reg[0]) {
+        ProgramCtr = memory_index;
+    }
+}
+
+//jump if Reg > Reg 0
+void Machine::__D(string &ins) {
+    int reg_index = base_to_decimal(ins[1]), memory_index = base_to_decimal(ins.substr(2,2), 16);
+    int reg_value = Reg[reg_index].twos_comp_value();
+    int reg_value0 = Reg[0].twos_comp_value();
+
+    if (reg_value > reg_value0) {
+        ProgramCtr = memory_index;
+    }
+}
+
+Machine::Machine(int memory_size, int register_count) {
+    mSize = memory_size;
+    rSize = register_count;
+
+    Memory = new Memory_Cell[memory_size];
+    Reg = new Register[register_count];
+    ProgramCtr = 0;
+    halt = false;
+}
+
+int Machine::registerCount() {
+    return rSize;
+}
+
+int Machine::memorySize() {
+    return mSize;
+}
+
+bool Machine::run_one_cycle() {
+    if (ProgramCtr.get_value() > 254 || halt) {
+        halt = true;
+        return false;
+    }
+    string ins = Memory[ProgramCtr.get_value()].hex_value();
+    if (ProgramCtr.get_value() < 255) {
+        ++ProgramCtr;
+    }
+    InstructionReg = base_to_decimal(ins, 16);
+
+    switch (ins[0]) {
+        case '1': {
+            __1(ins);
+            return true;
+        }
+        case '2': {
+            __2(ins);
+            return true;
+        }
+        case '3': {
+            __3(ins);
+            return true;
+        }
+        case '4': {
+            __4(ins);
+            return true;
+        }
+        case '5': {
+            __5(ins);
+            return true;
+        }
+        case '6': {
+            __6(ins);
+            return true;
+        }
+        case '7': {
+            __7(ins);
+            return true;
+        }
+        case '8': {
+            __8(ins);
+            return true;
+        }
+        case '9': {
+            __9(ins);
+            return true;
+        }
+        case 'B': {
+            __B(ins);
+            return true;
+        }
+        case 'D': {
+            __D(ins);
+            return true;
+        }
+    }
+    if (ins == "C000") {
+        halt = true;
+        return true;
+    }
+    return false;
+}
+
+string Machine::screen_content() {
+    return screen;
+}
+
+Memory_Cell &Machine::atMemory(int index) {
+    return Memory[index];
+}
+
+Register &Machine::atRegister(int index) {
+    return Reg[index];
+}
+
+void Machine::reset() {
+    for (int i = 0;i < rSize ;i++) {
+        Reg[i] = 0;
+    }
+    for (int i = 0;i < mSize ;i++) {
+        Memory[i] = 0;
+    }
+    ProgramCtr = 0;
+    halt = false;
+    screen.clear();
+}
+
+string Machine::PCtr() {
+    return ProgramCtr.hex_value();
+}
+
+string Machine::InsReg() {
+    return InstructionReg.hex_value();
+}
+
+bool Machine::halted() {
+    return halt;
+}
+
+Machine::~Machine() {
+    delete [] Memory;
+    delete [] Reg;
+}
 
 
