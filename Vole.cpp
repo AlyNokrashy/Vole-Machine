@@ -251,10 +251,7 @@ void Machine::__D(string &ins) {
     }
 }
 
-Machine::Machine(int memory_size, int register_count) {
-    mSize = memory_size;
-    rSize = register_count;
-
+Machine::Machine(int memory_size, int register_count) : mSize(memory_size), rSize(register_count) {
     Memory = new Memory_Cell[memory_size];
     Reg = new Register[register_count];
     ProgramCtr = 0;
@@ -307,20 +304,6 @@ bool Machine::run_one_cycle() {
             __6(ins);
             return true;
         }
-        /*
-        case '7': {
-            __7(ins);
-            return true;
-        }
-        case '8': {
-            __8(ins);
-            return true;
-        }
-        case '9': {
-            __9(ins);
-            return true;
-        }
-        */
         case 'B': {
             __B(ins);
             return true;
