@@ -3,15 +3,10 @@
 string decimal_to_base(int value, int base) {
     int v = value;
     string result;
-    char digit;
     while (v) {
         int remainder = v % base;
         v /= base;
-        if (remainder < 10) {
-            digit = remainder + '0';
-        } else {
-            digit = remainder - 10 + 'A';
-        }
+        char digit = (remainder < 10 ? remainder + '0' : 'A' + remainder - 10);
         result.push_back(digit);
     }
     if (result.empty())
@@ -22,7 +17,7 @@ string decimal_to_base(int value, int base) {
 
 int base_to_decimal(string value, int base) {
     reverse(value.begin(), value.end());
-    int pos = 0, n = 0;
+    int pos = 1, n = 0;
     for (auto &c : value) {
         int digit = (isalpha(c) ? c - 'A' + 10 : c - '0');
         n += digit * pos;
@@ -36,9 +31,8 @@ int base_to_decimal(char c) {
     return digit;
 }
 
-Memory_Cell::Memory_Cell(int val) {
-    value = val;
-}
+Memory_Cell::Memory_Cell(int val) : value{val}
+{}
 
 void Memory_Cell::set_value(int val)
 {
@@ -51,15 +45,15 @@ int Memory_Cell::get_value() const
 
 string Memory_Cell::binary_value() const {
     string binary_v = decimal_to_base(value, 2);
-    while (binary_v.length() < 8) {
+    while (binary_v.size() < 8) {
         binary_v = '0' + binary_v;
-        return binary_v;
     }
+    return binary_v;
 }
 
 string Memory_Cell::hex_value() const {
     string hex_v = decimal_to_base(value, 16);
-    while (hex_v.length() < 2) {
+    while (hex_v.size() < 2) {
         hex_v = '0' + hex_v;
     }
     return hex_v;
@@ -67,11 +61,10 @@ string Memory_Cell::hex_value() const {
 
 int Memory_Cell::twos_comp_value() const {
     string binary_v = binary_value();
-    int num = 0;
     bool reverse = false;
 
     if (binary_v[0] == '1') {
-        int size = binary_v.length();
+        int size = binary_v.size();
         for (int i = size - 1; i >= 0; i--) {
             if (reverse) {
                 binary_v[i] = !(binary_v[i] - '0') + '0';
@@ -128,7 +121,7 @@ Register Register::operator++() {
 }
 
 Register Register::operator+=(const Register &rhs) {
-    value += rhs.get_value();
+    value += rhs.value;
     return *this;
 }
 
@@ -155,8 +148,8 @@ string Arithmetic_Unit::float_to_binary(double d) {
 int Arithmetic_Unit::add_int(int val1, int val2) {
     int sum = val1 + val2;
     string binary_sum = decimal_to_base(sum, 2);
-    if (binary_sum.length() > 8) {
-        binary_sum.substr(binary_sum.size() - 8, 8);
+    if (binary_sum.size() > 8) {
+        binary_sum = binary_sum.substr(binary_sum.size() - 8, 8);
     }
     return base_to_decimal(binary_sum, 2);
 }
@@ -211,13 +204,14 @@ void Machine::__2(string &ins) {
 void Machine::__3(string &ins) {
     int reg_index = base_to_decimal(ins[1]), memory_index = base_to_decimal(ins.substr(2,2), 16);
     Memory[memory_index] = Reg[reg_index];
-    if (memory_index == 0) screen.push_back(Memory[memory_index].get_value());
+    if (memory_index == 0)
+                screen.push_back(Memory[memory_index].get_value());
 }
 
 //copy from register to another register
 void  Machine::__4(string &ins) {
     int reg_index1 = base_to_decimal(ins[2]), reg_index2 = base_to_decimal(ins[3]);
-    Reg[reg_index2] = Memory[reg_index1];
+    Reg[reg_index2] = Reg[reg_index1];
 }
 
 //adding 2's compliment
@@ -281,6 +275,8 @@ bool Machine::run_one_cycle() {
         return false;
     }
     string ins = Memory[ProgramCtr.get_value()].hex_value();
+    ++ProgramCtr;
+    ins += Memory[ProgramCtr.get_value()].hex_value();
     if (ProgramCtr.get_value() < 255) {
         ++ProgramCtr;
     }
@@ -311,6 +307,7 @@ bool Machine::run_one_cycle() {
             __6(ins);
             return true;
         }
+        /*
         case '7': {
             __7(ins);
             return true;
@@ -323,6 +320,7 @@ bool Machine::run_one_cycle() {
             __9(ins);
             return true;
         }
+        */
         case 'B': {
             __B(ins);
             return true;
