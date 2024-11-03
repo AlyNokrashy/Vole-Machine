@@ -46,8 +46,8 @@ class Machine
 {
     Arithmetic_Unit AU;
     Memory_Cell *Memory;
-    Register *Register, ProgramCtr, InstructionCtr;
-    int rCount, mSize;
+    Register *Reg, ProgramCtr, InstructionReg;
+    int rSize, mSize;
     bool halt;
     string screen;
 
@@ -58,7 +58,14 @@ class Machine
     void __4(string &ins);
     void __5(string &ins);
     void __6(string &ins);
+    /*
+    void __7(string &ins);
+    void __8(string &ins);
+    void __9(string &ins);
+    */
+    void __A(string &ins);
     void __B(string &ins);
+    void __D(string &ins);
 
 public:
     Machine(int memory_size = 256, int register_count = 16);
@@ -66,12 +73,12 @@ public:
     int registerCount();
     int memorySize();
     bool run_one_cycle();
-    string sceen();
-    Memory_Cell &atM(int index);
-    Register &atR(int index);
+    string screen_content();
+    Memory_Cell &atMemory(int index);
+    Register &atRegister(int index);
     void reset();
-    string PC();
-    string IR();
+    string PCtr();
+    string InsReg();
     bool halted();
     ~Machine();
 };
