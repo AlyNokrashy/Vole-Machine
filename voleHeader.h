@@ -27,7 +27,6 @@ class Register: public Memory_Cell
 public:
     bool operator==(const Memory_Cell &rhs) const;
     bool operator!=(const Memory_Cell &rhs) const;
-//    void printRegister();
     Register operator=(const Memory_Cell &rhs);
     Register operator=(const int rhs);
     Register operator++();
@@ -78,6 +77,7 @@ public:
     Register &atRegister(int index);
     void reset();
     string PCtr();
+    void set_pc(int index){ProgramCtr = index;};
     string InsReg();
     bool halted();
     void print_register();
