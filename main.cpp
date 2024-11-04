@@ -44,7 +44,7 @@ int main() {
                 int index = 0;
                 cout << "Filename: ";
                 cin >> filename;
-                ifstream fs(filename);
+                ifstream fs("../"+filename);
                 if (!fs.is_open()) {
                     cerr << "Error: Could not open file " << filename << endl;
                     continue;
@@ -71,35 +71,17 @@ int main() {
             }
             case 2:
             {
-                cout << machine.screen_content() << endl;
+                cout << machine.atMemory(0).get_value()<< endl;
                 break;
             }
             case 3:
             {
-                for (int i = 0; i < machine.registerCount(); i++) {
-                    cout << 'R' << decimal_to_base(i, 16) << ": " << machine.atRegister(i).hex_value() << endl;
-                }
-                cout << "ProgramCtr: " << machine.PCtr() << " Instruction Regsiter: " << machine.InsReg() << endl;
+                machine.print_register();
                 break;
             }
             case 4:
             {
-                cout << " ";
-                for (int i = 0; i < 16; i++) {
-                    char c = (i < 10  ? '0' + i : i - 10 + 'A');
-                    cout << c << " ";
-                }
-                cout << endl;
-                for (int i = 0; i < 16; i++)
-                {
-                    char c = (i < 10  ? i + '0' : i - 10 + 'A');
-                    cout << c << " ";
-                    for (int j = 0; j < 16; j++)
-                    {
-                        cout << machine.atMemory(i * 16 + j).hex_value() << " ";
-                    }
-                    cout << endl;
-                }
+                machine.print_memory();
                 break;
             }
             case 5:
@@ -107,11 +89,15 @@ int main() {
                 while (!machine.halted()) {
                     machine.run_one_cycle();
                 }
+                machine.print_register();
+                machine.print_memory();
                 break;
             }
             case 6:
             {
                 machine.run_one_cycle();
+                machine.print_register();
+                machine.print_memory();
                 break;
             }
         }

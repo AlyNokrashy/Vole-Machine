@@ -360,5 +360,28 @@ Machine::~Machine() {
     delete [] Memory;
     delete [] Reg;
 }
-
+void Machine::print_register(){
+    for (int i = 0; i < registerCount(); i++) {
+        cout << 'R' << decimal_to_base(i, 16) << ": " << atRegister(i).hex_value() << endl;
+    }
+    cout << "ProgramCtr: " << PCtr() << " Instruction Regsiter: " << InsReg() << endl;
+}
+void Machine::print_memory() {
+    cout << " ";
+    for (int i = 0; i < 16; i++) {
+        char c = (i < 10  ? '0' + i : i - 10 + 'A');
+        cout << c << " ";
+    }
+    cout << endl;
+    for (int i = 0; i < 16; i++)
+    {
+        char c = (i < 10  ? i + '0' : i - 10 + 'A');
+        cout << c << " ";
+        for (int j = 0; j < 16; j++)
+        {
+            cout << atMemory(i * 16 + j).hex_value() << " ";
+        }
+        cout << endl;
+    }
+}
 
