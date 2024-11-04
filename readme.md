@@ -1,4 +1,3 @@
-```markdown
 # Vole Machine GUI
 
 This repository contains the source code for the Vole Machine GUI application, developed using Qt 6 and CMake. The application provides an interface for interacting with the Vole machine functionalities.
