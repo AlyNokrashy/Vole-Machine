@@ -1,5 +1,3 @@
-Here's a sample README for your repository that outlines the structure, purpose, and relevant details about your project. You can customize it further based on any specific requirements or additional information you'd like to include.
-
 ```markdown
 # Vole Machine GUI
 
