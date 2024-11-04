@@ -34,6 +34,8 @@ private slots:
     void on_program1Apply_clicked();
     void on_program2Apply_clicked();
 
+    void on_reset_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

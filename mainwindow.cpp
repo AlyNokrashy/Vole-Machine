@@ -242,3 +242,11 @@ C000
 
 
 
+
+void MainWindow::on_reset_clicked()
+{
+    machine.reset();
+    ui->screen->setText(" ");
+    update_ui();
+}
+
