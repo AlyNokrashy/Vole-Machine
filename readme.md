@@ -44,3 +44,10 @@ To build and run the project, follow these steps:
    ```bash
    ./Desktop_Qt_6_8_0_MinGW_64_bit-Debug/VoleMachineGui
    ```
+## Contributions
+
+Contributions to the project are welcome! If you have suggestions or improvements, please open an issue or submit a pull request.
+
+## Acknowledgments
+
+Thanks to the Qt community and CMake documentation for their invaluable resources.
