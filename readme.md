@@ -49,10 +49,3 @@ To build and run the project, follow these steps:
    ./VoleMachineGui
    ```
 
-## Contributions
-
-Contributions to the project are welcome! If you have suggestions or improvements, please open an issue or submit a pull request.
-
-## Acknowledgments
-
-Thanks to the Qt community for their invaluable resources.
